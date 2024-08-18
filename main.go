@@ -1,7 +1,7 @@
 package main
 
 import (
-	ws281x "github.com/mcuadros/go-rpi-ws281x"
+	"github.com/heyvito/env-light/ws281x"
 	"image/color"
 )
 
