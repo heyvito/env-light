@@ -16,14 +16,18 @@ import (
 )
 
 type Matrix struct {
-	state      any
+	state      unsafe.Pointer
 	color      color.RGBA
 	brightness uint8
 }
 
 func (m *Matrix) Init(count, gpio int) error {
-	err := C.wsgo_init(unsafe.Pointer(&m.state), C.int(count), C.int(gpio))
-	fmt.Printf("Error is %#v\n", err)
-
+	var state unsafe.Pointer
+	cErr := C.wsgo_init(C.int(count), C.int(gpio), &state)
+	errNo := int(cErr)
+	if errNo != 0 {
+		return fmt.Errorf("wsgo_init errno: %d", errNo)
+	}
+	m.state = state
 	return nil
 }
