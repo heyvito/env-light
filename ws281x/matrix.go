@@ -37,7 +37,7 @@ func (m *Matrix) Finish() {
 }
 
 func (m *Matrix) SetColor(r, g, b, brightness uint8) error {
-	cErr := C.wsgo_set_color(m.state, r, g, b, brightness)
+	cErr := C.wsgo_set_color(m.state, C.uint8_t(r), C.uint8_t(g), C.uint8_t(b), C.uint8_t(brightness))
 	errNo := int(cErr)
 	if errNo != 0 {
 		return fmt.Errorf("wsgo_set_color errno: %d", errNo)
