@@ -1,9 +1,6 @@
 package main
 
-import (
-	"github.com/heyvito/env-light/ws281x"
-	"image/color"
-)
+import "github.com/heyvito/env-light/ws281x"
 
 func fatal(err error) {
 	if err != nil {
@@ -12,27 +9,7 @@ func fatal(err error) {
 }
 
 func main() {
-	config := &ws281x.DefaultConfig
-	config.Brightness = 128
-	config.Pin = 12
-	width := 78
-	height := 1
-
-	c, err := ws281x.NewCanvas(width, height, config)
+	mat := ws281x.Matrix{}
+	err := mat.Init(78, 18)
 	fatal(err)
-
-	defer c.Close()
-	err = c.Initialize()
-	fatal(err)
-
-	bounds := c.Bounds()
-
-	col := color.RGBA{255, 0, 0, 255}
-	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-			c.Set(x, y, col)
-		}
-		err = c.Render()
-		fatal(err)
-	}
 }
