@@ -27,7 +27,7 @@ func main() {
 	ac := accessory.NewColoredLightbulb(info)
 
 	updateColor := func() {
-		c := colorful.Hsl(H, S/100, L/100)
+		c := colorful.Hsl(H, S, L)
 		r, g, b := c.RGB255()
 		l := uint8(math.Ceil(L * 255.0))
 		fmt.Printf("Setting color: %d, %d, %d, %d\n", r, g, b, l)
