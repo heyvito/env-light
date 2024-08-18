@@ -27,10 +27,11 @@ func main() {
 	ac := accessory.NewColoredLightbulb(info)
 
 	updateColor := func() {
+		fmt.Printf("Setting color HSL: %f, %f, %f\n", H, S, L)
 		c := colorful.Hsl(H, S, L)
 		r, g, b := c.RGB255()
 		l := uint8(math.Ceil(L * 255.0))
-		fmt.Printf("Setting color: %d, %d, %d, %d\n", r, g, b, l)
+		fmt.Printf("Setting color RGBL: %d, %d, %d, %d\n", r, g, b, l)
 		if err := mat.SetColor(r, g, b, l); err != nil {
 			fmt.Printf("Error updating color: %s\n", err)
 		}
