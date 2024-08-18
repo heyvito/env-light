@@ -28,7 +28,8 @@ func main() {
 
 	updateColor := func() {
 		fmt.Printf("Setting color HSL: %f, %f, %f\n", H, S, L)
-		c := colorful.Hsl(H, S, L)
+		//c := colorful.Hsl(H, S, L)
+		c := colorful.Hsv(H, S, L)
 		r, g, b := c.RGB255()
 		l := uint8(math.Ceil(L * 255.0))
 		fmt.Printf("Setting color RGBL: %d, %d, %d, %d\n", r, g, b, l)
