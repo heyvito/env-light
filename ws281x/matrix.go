@@ -33,7 +33,7 @@ func (m *Matrix) Init(count, gpio int) error {
 }
 
 func (m *Matrix) Finish() {
-	C.wsgo_finish(m.state)
+	C.wdgo_deinit(m.state)
 }
 
 func (m *Matrix) SetColor(r, g, b, brightness uint8) error {
