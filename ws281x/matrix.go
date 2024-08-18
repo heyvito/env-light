@@ -1,8 +1,8 @@
 package ws281x
 
 /*
-#cgo CFLAGS: -std=c99 -Irpi_ws281x
-#cgo LDFLAGS: -lws2811 -Lrpi_ws281x
+#cgo CFLAGS: -std=c99 -I../../rpi_ws281x
+#cgo LDFLAGS: -lws2811 -L../../rpi_ws281x
 #include <stdint.h>
 #include <string.h>
 #include <ws2811.h>

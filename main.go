@@ -14,7 +14,7 @@ func fatal(err error) {
 func main() {
 	config := &ws281x.DefaultConfig
 	config.Brightness = 128
-	config.Pin = 23
+	config.Pin = 12
 	width := 78
 	height := 1
 
