@@ -31,3 +31,17 @@ func (m *Matrix) Init(count, gpio int) error {
 	m.state = state
 	return nil
 }
+
+func (m *Matrix) Finish() {
+	C.wsgo_finish(m.state)
+}
+
+func (m *Matrix) SetColor(r, g, b, brightness uint8) error {
+	cErr := C.wsgo_set_color(m.state, r, g, b, brightness)
+	errNo := int(cErr)
+	if errNo != 0 {
+		return fmt.Errorf("wsgo_set_color errno: %d", errNo)
+	}
+
+	return nil
+}
