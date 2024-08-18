@@ -7,6 +7,7 @@ import (
 	"github.com/heyvito/env-light/ws281x"
 	"github.com/lucasb-eyer/go-colorful"
 	"log"
+	"math"
 )
 
 func fatal(err error) {
@@ -28,7 +29,9 @@ func main() {
 	updateColor := func() {
 		c := colorful.Hsl(H, S/100, L/100)
 		r, g, b := c.RGB255()
-		if err := mat.SetColor(r, g, b, uint8(int(L)*255)); err != nil {
+		l := uint8(math.Ceil(L * 255.0))
+		fmt.Printf("Setting color: %d, %d, %d, %d\n", r, g, b, l)
+		if err := mat.SetColor(r, g, b, l); err != nil {
 			fmt.Printf("Error updating color: %s\n", err)
 		}
 	}
