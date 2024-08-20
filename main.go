@@ -51,7 +51,7 @@ func fatal(err error) {
 
 func main() {
 	mat := ws281x.Matrix{}
-	err := mat.Init(78, 18)
+	err := mat.Init(78, 12)
 	fatal(err)
 
 	var H, S, L float64
