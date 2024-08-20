@@ -98,7 +98,7 @@ func main() {
 
 	updateColor := func() {
 		fmt.Printf("Setting color HSL: %f, %f, %f\n", H, S, L)
-		c := colorful.Hsl(H, S, L)
+		c := colorful.Hsv(H, S, L)
 		//r, g, b := hslToRGB(H/360.0, S, L)
 		r, g, b := c.RGB255()
 		rr, gg, bb, ll := uint8(r), uint8(g), uint8(b), uint8(L*128.0)
