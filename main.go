@@ -58,19 +58,23 @@ func hueToRGB(p, q, t float64) float64 {
 func hslToRGB(h, s, l float64) (r, g, b float64) {
 	if s == 0.0 {
 		r, g, b = l, l, l
-		return
+	} else {
+
+		var q float64
+		if l < 0.5 {
+			q = l * (1.0 + s)
+		} else {
+			q = l + s - l*s
+		}
+		p := 2.0*l - q
+		r = hueToRGB(p, q, h+1.0/3.0)
+		g = hueToRGB(p, q, h)
+		b = hueToRGB(p, q, h-1.0/3.0)
 	}
 
-	var q float64
-	if l < 0.5 {
-		q = l * (1.0 + s)
-	} else {
-		q = l + s - l*s
-	}
-	p := 2.0*l - q
-	r = hueToRGB(p, q, h+1.0/3.0)
-	g = hueToRGB(p, q, h)
-	b = hueToRGB(p, q, h-1.0/3.0)
+	r *= 255.0
+	g *= 255.0
+	b *= 255.0
 
 	return
 }
