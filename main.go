@@ -8,39 +8,71 @@ import (
 	"log"
 )
 
-type HSL struct {
-	s, v, h float64
+/*
+function hslToRgb(h, s, l) {
+  var r, g, b;
+
+  if (s == 0) {
+    r = g = b = l; // achromatic
+  } else {
+    function hue2rgb(p, q, t) {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1/6) return p + (q - p) * 6 * t;
+      if (t < 1/2) return q;
+      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+    }
+
+    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    var p = 2 * l - q;
+
+    r = hue2rgb(p, q, h + 1/3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1/3);
+  }
+
+  return [ r * 255, g * 255, b * 255 ];
+}
+*/
+
+func hueToRGB(p, q, t float64) float64 {
+	if t < 0 {
+		t += 1
+	}
+	if t > 1 {
+		t -= 1
+	}
+	if t < 1/6 {
+		return p + (q-p)*6*t
+	}
+	if t < 1/2 {
+		return q
+	}
+	if t < 2/3 {
+		return p + (q-p)*(2/3-t)*6
+	}
+	return p
 }
 
-func (h HSL) RGB() (r, g, b, ww, cw float64) {
-	s := h.s
-	v := h.v
-	if v == 0 {
+func hslToRGB(h, s, l float64) (r, g, b float64) {
+	if s == 0 {
+		r, g, b = l, l, l
 		return
 	}
-	hue := h.h / 60.0
-	const x = 255
-	switch int(h.h / 60) {
-	case 0:
-		r, g, b = 1, hue, 0
-	case 1:
-		r, g, b = 2-hue, 1, 0
-	case 2:
-		b, r, g = hue-2, 0, 1
-	case 3:
-		r, g, b = 0, 4-hue, 1
-	case 4:
-		r, g, b = hue-4, 0, 1
-	case 5:
-		r, g, b = 1, 0, 6-hue
+
+	var q float64
+	if l < 0.5 {
+		q = l * (1 + s)
+	} else {
+		q = l + s - l*s
 	}
+	p := 2*l - q
+	r = hueToRGB(p, q, h+1/3)
+	g = hueToRGB(p, q, h)
+	b = hueToRGB(p, q, h-1/3)
 
-	r = v * r
-	g = v * g
-	b = v * b
-	cw = v * (1 - s) * 0.5
-
-	return r * x, g * x, b * x, 0, cw * x
+	return
 }
 
 func fatal(err error) {
@@ -61,12 +93,12 @@ func main() {
 
 	updateColor := func() {
 		fmt.Printf("Setting color HSL: %f, %f, %f\n", H, S, L)
-		c := HSL{H, S, L}
-		r, g, b, _, cw := c.RGB()
-		rr, gg, bb, ccw := uint8(r), uint8(g), uint8(b), uint8(cw)
 
-		fmt.Printf("Setting color RGBL: %d, %d, %d, %d\n", rr, gg, bb, ccw)
-		if err := mat.SetColor(rr, gg, bb, ccw); err != nil {
+		r, g, b := hslToRGB(H, S, L)
+		rr, gg, bb, ll := uint8(r), uint8(g), uint8(b), uint8(L*255.0)
+
+		fmt.Printf("Setting color RGB: %d, %d, %d (L=%d)\n", rr, gg, bb, ll)
+		if err := mat.SetColor(rr, gg, bb, ll); err != nil {
 			fmt.Printf("Error updating color: %s\n", err)
 		}
 	}
