@@ -5,6 +5,7 @@ import (
 	"github.com/brutella/hc"
 	"github.com/brutella/hc/accessory"
 	"github.com/heyvito/env-light/ws281x"
+	"github.com/lucasb-eyer/go-colorful"
 	"log"
 )
 
@@ -97,9 +98,10 @@ func main() {
 
 	updateColor := func() {
 		fmt.Printf("Setting color HSL: %f, %f, %f\n", H, S, L)
-
-		r, g, b := hslToRGB(H/360.0, S, L)
-		rr, gg, bb, ll := uint8(r), uint8(g), uint8(b), uint8(L*255.0)
+		c := colorful.Hsl(H, S, L)
+		//r, g, b := hslToRGB(H/360.0, S, L)
+		r, g, b := c.RGB255()
+		rr, gg, bb, ll := uint8(r), uint8(g), uint8(b), uint8(L*128.0)
 
 		fmt.Printf("Setting color RGB: %d, %d, %d (L=%d)\n", rr, gg, bb, ll)
 		if err := mat.SetColor(rr, gg, bb, ll); err != nil {
