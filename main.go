@@ -5,10 +5,43 @@ import (
 	"github.com/brutella/hc"
 	"github.com/brutella/hc/accessory"
 	"github.com/heyvito/env-light/ws281x"
-	"github.com/lucasb-eyer/go-colorful"
 	"log"
-	"math"
 )
+
+type HSL struct {
+	s, v, h float64
+}
+
+func (h HSL) RGB() (r, g, b, ww, cw float64) {
+	s := h.s
+	v := h.v
+	if v == 0 {
+		return
+	}
+	hue := h.h / 60.0
+	const x = 255
+	switch int(h.h / 60) {
+	case 0:
+		r, g, b = 1, hue, 0
+	case 1:
+		r, g, b = 2-hue, 1, 0
+	case 2:
+		b, r, g = hue-2, 0, 1
+	case 3:
+		r, g, b = 0, 4-hue, 1
+	case 4:
+		r, g, b = hue-4, 0, 1
+	case 5:
+		r, g, b = 1, 0, 6-hue
+	}
+
+	r = v * r
+	g = v * g
+	b = v * b
+	cw = v * (1 - s) * 0.5
+
+	return r * x, g * x, b * x, 0, cw * x
+}
 
 func fatal(err error) {
 	if err != nil {
@@ -28,12 +61,12 @@ func main() {
 
 	updateColor := func() {
 		fmt.Printf("Setting color HSL: %f, %f, %f\n", H, S, L)
-		c := colorful.Hsl(H, S, L)
-		//c := colorful.Hsv(H, S, L)
-		r, g, b := c.RGB255()
-		l := uint8(math.Ceil(L * 255.0))
-		fmt.Printf("Setting color RGBL: %d, %d, %d, %d\n", r, g, b, l)
-		if err := mat.SetColor(r, g, b, l); err != nil {
+		c := HSL{H, S, L}
+		r, g, b, _, cw := c.RGB()
+		rr, gg, bb, ccw := uint8(r), uint8(g), uint8(b), uint8(cw)
+
+		fmt.Printf("Setting color RGBL: %d, %d, %d, %d\n", rr, gg, bb, ccw)
+		if err := mat.SetColor(rr, gg, bb, ccw); err != nil {
 			fmt.Printf("Error updating color: %s\n", err)
 		}
 	}
